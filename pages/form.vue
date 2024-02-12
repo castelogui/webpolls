@@ -3,9 +3,13 @@
     <form action="">
       <UIInput label="Title" type="text" v-model="poll.title" />
       <div v-if="poll.id">
-        <div v-for="option in options" :key="option.id">
-          <UIInput label="Options" type="text" v-model="option.title" />
-        </div>
+        <UIInput
+          v-for="option in options"
+          :key="option.id"
+          label="Opções"
+          type="text"
+          v-model="option.title"
+        />
       </div>
       <UIInput
         v-else-if="!poll.id"
@@ -53,8 +57,9 @@ const savePoll = async () => {
   } else {
     options.title = option.title;
     const title = poll.title;
-    const pollCreate = await createPoll({ title, options });
-    console.log(pollCreate);
+    const data = await createPoll({ title, options });
+    const sessionId = useCookie("sessionId");
+    sessionId.value = data.sessionId;
   }
 
   router.push("/");

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full px-2">
-    <ListItem>
+    <ListItem v-if="poll.id">
       {{ poll.title }}
       <template #totais>{{
         poll.options.reduce((total, option) => total + option.score, 0)
@@ -29,13 +29,44 @@
         <div class="flex flex-wrap">
           <button
             class="p-1 bg-sky-400 text-white rounded m-1"
-            @click="removePoll(poll.id)"
+            @click="sharedPoll(poll.id)"
           >
             Compartilhar
           </button>
         </div>
       </template>
     </ListItem>
+    <ListItem v-else-if="statusPoll.status">Carregando...</ListItem>
+    <ListItem v-if="!statusPoll.status" class="bg-red-200"
+      >Esta enquete não existe ou foi excluida</ListItem
+    >
+    <!-- Modal -->
+    <div
+      v-if="showModal.status"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white p-8 rounded-lg">
+        <p>Compartilhar link:</p>
+        <input
+          id="linkPollShared"
+          type="text"
+          :value="linkShared.link"
+          class="w-full border border-gray-300 rounded-md p-2 mt-2"
+        />
+        <button
+          @click="copyLink()"
+          class="bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mr-3"
+        >
+          Abrir
+        </button>
+        <button
+          @click="showModal.status = false"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4"
+        >
+          Fechar
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,6 +79,11 @@ let poll = reactive({
   title: "",
   options: [],
 });
+let statusPoll = reactive({
+  status: Boolean,
+});
+let showModal = reactive({ status: false });
+let linkShared = reactive({ value: "", link: "" });
 onMounted(async () => {
   const id = route.query.id;
   if (id) {
@@ -58,6 +94,7 @@ onMounted(async () => {
 const definePoll = async (id) => {
   const pollGet = await getPoll(id);
   if (pollGet) {
+    statusPoll.status = true;
     poll.id = pollGet.id;
     poll.title = pollGet.title;
     if (poll.options.length == 0) {
@@ -71,6 +108,8 @@ const definePoll = async (id) => {
         });
       });
     }
+  } else {
+    statusPoll.status = false;
   }
 };
 const votePollOption = async (id) => {
@@ -78,6 +117,15 @@ const votePollOption = async (id) => {
   const pollId = poll.id;
   await votePoll(pollId, pollOptionId);
   definePoll(pollId);
+};
+const sharedPoll = (pollid) => {
+  linkShared.value = pollid;
+  linkShared.link = `webpoll.vercel.app/vote?id=${pollid}`;
+  showModal.status = true;
+};
+const copyLink = (pollid) => {
+  window.open(`/vote?id=${linkShared.value}`, "_blank");
+  showModal.value = false;
 };
 </script>
 
