@@ -1,10 +1,10 @@
 export default () => {
   const sessionId = useCookie("sessionId");
   let pollsList = [];
-  const api = "https://polls-xi-ten.vercel.app/";
+  const api = "https://polls-xi-ten.vercel.app";
   const apiDev = "http://localhost:3333";
   const apiWsDev = "ws://localhost:3333";
-  const apiWs = "ws://polls-xi-ten.vercel.app/";
+  const apiWs = "ws://polls-xi-ten.vercel.app";
   const fetchPollList = async () => {
     const { data } = await useAsyncData(
       "polls",
