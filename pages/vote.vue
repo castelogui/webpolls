@@ -120,7 +120,7 @@ const votePollOption = async (id) => {
 };
 const sharedPoll = (pollid) => {
   linkShared.value = pollid;
-  linkShared.link = `webpoll.vercel.app/vote?id=${pollid}`;
+  linkShared.link = `webpolls.vercel.app/vote?id=${pollid}`;
   showModal.status = true;
 };
 const copyLink = (pollid) => {
