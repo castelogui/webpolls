@@ -1,23 +1,25 @@
 export default () => {
   const sessionId = useCookie("sessionId");
   let pollsList = [];
+  const api = "https://polls-xi-ten.vercel.app/";
+  const apiDev = "http://localhost:3333";
+  const apiWsDev = "ws://localhost:3333";
+  const apiWs = "ws://polls-xi-ten.vercel.app/";
   const fetchPollList = async () => {
     const { data } = await useAsyncData(
       "polls",
       async () =>
-        await $fetch("https://polls-xi-ten.vercel.app/polls", {
+        await $fetch(`${api}/polls`, {
+          method: "GET",
           headers: {
             getSetCookie: sessionId.value,
-            "Content-Type": "application/json",
           },
         })
     );
     if (data.value) {
       data.value.map(async (poll) => {
         pollsList.push(poll);
-        const ws = new WebSocket(
-          `ws://polls-xi-ten.vercel.app/polls/${poll.id}/results`
-        );
+        const ws = new WebSocket(`${apiWs}/polls/${poll.id}/results`);
         ws.onopen = () => {
           console.log("Ws connection");
         };
@@ -37,21 +39,18 @@ export default () => {
   };
 
   const createPoll = async ({ title, options }) => {
-    console.log(sessionId.value);
     try {
-      const data = await $fetch("https://polls-xi-ten.vercel.app/polls", {
+      const data = await $fetch(`${api}/polls`, {
         method: "POST",
         body: {
           title: title,
           options: options.title.split(";").map((value) => value.trim()),
         },
         headers: {
-          "Content-Type": "application/json",
           getSetCookie: sessionId.value,
         },
       });
-      console.log(data);
-      if (!sessionId.value) {
+      if (!sessionId.value && data?.sessionId) {
         sessionId.value = data.sessionId;
       }
       return data;
@@ -64,14 +63,14 @@ export default () => {
     const { data } = await useAsyncData(
       "poll",
       async () =>
-        await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
+        await $fetch(`${api}/polls/${id}`, {
           method: "PATCH",
+
           body: {
             title: poll.title,
             options: poll.options,
           },
           headers: {
-            "Content-Type": "application/json",
             getSetCookie: sessionId.value,
           },
         })
@@ -79,19 +78,15 @@ export default () => {
   };
 
   const votePoll = async (pollId, pollOptionId) => {
-    const dataVote = await $fetch(
-      `https://polls-xi-ten.vercel.app/polls/${pollId}/votes`,
-      {
-        method: "POST",
-        body: {
-          pollOptionId: pollOptionId,
-        },
-        headers: {
-          "Content-Type": "application/json",
-          getSetCookie: sessionId.value,
-        },
-      }
-    );
+    const dataVote = await $fetch(`${api}/polls/${pollId}/votes`, {
+      method: "POST",
+      body: {
+        pollOptionId: pollOptionId,
+      },
+      headers: {
+        getSetCookie: sessionId.value,
+      },
+    });
     console.log(dataVote);
   };
 
@@ -100,10 +95,10 @@ export default () => {
       await useAsyncData(
         "poll",
         async () =>
-          await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
+          await $fetch(`${api}/polls/${id}`, {
             method: "DELETE",
+
             headers: {
-              "Content-Type": "application/json",
               getSetCookie: sessionId.value,
             },
           })
@@ -112,10 +107,9 @@ export default () => {
 
   const getPoll = async (id) => {
     try {
-      const data = await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const data = await $fetch(`${api}/polls/${id}`, {
+        method: "GET",
+        headers: {},
       });
       return data.poll;
     } catch (error) {
