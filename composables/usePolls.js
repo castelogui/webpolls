@@ -13,13 +13,18 @@ export default () => {
           method: "GET",
           headers: {
             getSetCookie: sessionId.value,
+            "Content-Type": "application/json",
           },
         })
     );
     if (data.value) {
       data.value.map(async (poll) => {
         pollsList.push(poll);
-        const ws = new WebSocket(`${apiWs}/polls/${poll.id}/results`);
+        const ws = new WebSocket(`${apiWs}/polls/${poll.id}/results`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         ws.onopen = () => {
           console.log("Ws connection");
         };
@@ -48,6 +53,7 @@ export default () => {
         },
         headers: {
           getSetCookie: sessionId.value,
+          "Content-Type": "application/json",
         },
       });
       if (!sessionId.value && data?.sessionId) {
@@ -65,13 +71,13 @@ export default () => {
       async () =>
         await $fetch(`${api}/polls/${id}`, {
           method: "PATCH",
-
           body: {
             title: poll.title,
             options: poll.options,
           },
           headers: {
             getSetCookie: sessionId.value,
+            "Content-Type": "application/json",
           },
         })
     );
@@ -85,6 +91,7 @@ export default () => {
       },
       headers: {
         getSetCookie: sessionId.value,
+        "Content-Type": "application/json",
       },
     });
     console.log(dataVote);
@@ -97,9 +104,9 @@ export default () => {
         async () =>
           await $fetch(`${api}/polls/${id}`, {
             method: "DELETE",
-
             headers: {
               getSetCookie: sessionId.value,
+              "Content-Type": "application/json",
             },
           })
       );
@@ -109,7 +116,9 @@ export default () => {
     try {
       const data = await $fetch(`${api}/polls/${id}`, {
         method: "GET",
-        headers: {},
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       return data.poll;
     } catch (error) {
