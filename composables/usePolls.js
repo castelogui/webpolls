@@ -107,7 +107,7 @@ export default () => {
 
   const getPoll = async (id) => {
     try {
-      const data = await $fetch(`http://polls-xi-ten.vercel.app/polls/${id}`);
+      const data = await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`);
       return data.poll;
     } catch (error) {
       console.log(error);
