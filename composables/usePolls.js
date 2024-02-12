@@ -5,7 +5,7 @@ export default () => {
     const { data } = await useAsyncData(
       "polls",
       async () =>
-        await $fetch("http://localhost:3333/polls", {
+        await $fetch("https://polls-xi-ten.vercel.app/polls", {
           headers: {
             getSetCookie: sessionId.value,
           },
@@ -15,7 +15,7 @@ export default () => {
       data.value.map(async (poll) => {
         pollsList.push(poll);
         const ws = new WebSocket(
-          `ws://localhost:3333/polls/${poll.id}/results`
+          `ws://polls-xi-ten.vercel.app/polls/${poll.id}/results`
         );
         ws.onopen = () => {
           console.log("Ws connection");
@@ -38,7 +38,7 @@ export default () => {
   const createPoll = async ({ title, options }) => {
     console.log(sessionId.value);
     try {
-      const data = await $fetch("http://localhost:3333/polls", {
+      const data = await $fetch("https://polls-xi-ten.vercel.app/polls", {
         method: "POST",
         body: {
           title: title,
@@ -62,7 +62,7 @@ export default () => {
     const { data } = await useAsyncData(
       "poll",
       async () =>
-        await $fetch(`http://localhost:3333/polls/${id}`, {
+        await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
           method: "PATCH",
           body: {
             title: poll.title,
@@ -77,7 +77,7 @@ export default () => {
 
   const votePoll = async (pollId, pollOptionId) => {
     const dataVote = await $fetch(
-      `http://localhost:3333/polls/${pollId}/votes`,
+      `https://polls-xi-ten.vercel.app/polls/${pollId}/votes`,
       {
         method: "POST",
         body: {
@@ -96,7 +96,7 @@ export default () => {
       await useAsyncData(
         "poll",
         async () =>
-          await $fetch(`http://localhost:3333/polls/${id}`, {
+          await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
             method: "DELETE",
             headers: {
               getSetCookie: sessionId.value,
@@ -107,7 +107,7 @@ export default () => {
 
   const getPoll = async (id) => {
     try {
-      const data = await $fetch(`http://localhost:3333/polls/${id}`);
+      const data = await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`);
       return data.poll;
     } catch (error) {
       console.log(error);

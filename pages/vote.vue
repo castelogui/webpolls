@@ -123,7 +123,7 @@ const sharedPoll = (pollid) => {
   linkShared.link = `webpolls.vercel.app/vote?id=${pollid}`;
   showModal.status = true;
 };
-const copyLink = (pollid) => {
+const copyLink = () => {
   window.open(`/vote?id=${linkShared.value}`, "_blank");
   showModal.value = false;
 };
