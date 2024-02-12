@@ -7,7 +7,12 @@
           <UIInput label="Options" type="text" v-model="option.title" />
         </div>
       </div>
-      <UIInput v-else-if="!poll.id" label="Options" type="text" v-model="option.title" />
+      <UIInput
+        v-else-if="!poll.id"
+        label="Options"
+        type="text"
+        v-model="option.title"
+      />
       <UIButton @click="savePoll">Salvar Enquete</UIButton>
     </form>
   </div>
@@ -20,11 +25,11 @@ const route = useRoute();
 
 const poll = reactive({
   id: "",
-  title: ""
-})
+  title: "",
+});
 const options = reactive([]);
 const option = reactive({
-  title: ""
+  title: "",
 });
 
 onMounted(async () => {
@@ -42,13 +47,14 @@ onMounted(async () => {
 
 const savePoll = async () => {
   if (poll.id) {
-    const title = poll.title
+    const title = poll.title;
     const pollUpdate = { title, options };
     await updatePoll(poll.id, pollUpdate);
   } else {
-    options.title = option.title
-    const title = poll.title
-    await createPoll({title, options});
+    options.title = option.title;
+    const title = poll.title;
+    const pollCreate = await createPoll({ title, options });
+    console.log(pollCreate);
   }
 
   router.push("/");

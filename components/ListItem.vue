@@ -20,7 +20,7 @@
               d="M9 10V3m6 0v7m-3-4v4m-6 7h12M5 21v-3a2 2 0 012-2h10a2 2 0 012 2v3"
             ></path>
           </svg>
-          <span class="text-gray-500">5<slot name="totais" /></span>
+          <span class="text-gray-500"><slot name="totais" /></span>
         </div>
       </div>
     </div>

@@ -2,12 +2,15 @@
   <div class="w-full px-2">
     <ListItem>
       {{ poll.title }}
+      <template #totais>{{
+        poll.options.reduce((total, option) => total + option.score, 0)
+      }}</template>
       <template #options>
         <div class="flex flex-wrap items-center mb-3">
           <div
             v-for="option in poll.options"
             :key="option.id"
-            class="mb-2 mt-2"
+            class="mb-2 mt-2 options"
           >
             <span
               class="w-20 rounded-s-lg bg-slate-200 text-sky-900 p-2 ml-5 hover:text-gray-50 hover: hover:bg-slate-600 active:bg-violet-700 hover:cursor-pointer"
@@ -21,27 +24,17 @@
           </div>
         </div>
       </template>
-      <!---
-        <template #actions>
-          <div class="flex flex-wrap">
-            <button
+
+      <template #actions>
+        <div class="flex flex-wrap">
+          <button
             class="p-1 bg-sky-400 text-white rounded m-1"
             @click="removePoll(poll.id)"
-            >
+          >
             Compartilhar
           </button>
-          <button class="p-1 bg-emerald-300 rounded m-1" @click="editPoll(poll.id)">
-            Editar
-          </button>
-          <button
-          class="p-1 bg-red-400 text-white rounded m-1"
-          @click="removePoll(poll.id)"
-          >
-          Excluir
-          </button>
-         </div>
-        </template>
-        -->
+        </div>
+      </template>
     </ListItem>
   </div>
 </template>
@@ -56,23 +49,40 @@ let poll = reactive({
   options: [],
 });
 onMounted(async () => {
-  poll.id = route.query.id;
-  if (poll.id) {
-    const pollGet = await getPoll(poll.id);
-
-    poll.id = pollGet.id;
-    poll.title = pollGet.title;
-    pollGet.options.map((option) => {
-      poll.options.push(option);
-    });
+  const id = route.query.id;
+  if (id) {
+    definePoll(id);
   }
 });
 
+const definePoll = async (id) => {
+  const pollGet = await getPoll(id);
+  if (pollGet) {
+    poll.id = pollGet.id;
+    poll.title = pollGet.title;
+    if (poll.options.length == 0) {
+      pollGet.options.map((option) => poll.options.push(option));
+    } else {
+      poll.options.map((option) => {
+        pollGet.options.map((optionGetPoll) => {
+          option.id == optionGetPoll.id
+            ? (option.score = optionGetPoll.score)
+            : option.score;
+        });
+      });
+    }
+  }
+};
 const votePollOption = async (id) => {
   const pollOptionId = id;
   const pollId = poll.id;
-  await votePoll(pollId, pollOptionId );
-  router.push("/");
+  await votePoll(pollId, pollOptionId);
+  definePoll(pollId);
 };
-
 </script>
+
+<style>
+.options {
+  user-select: none;
+}
+</style>

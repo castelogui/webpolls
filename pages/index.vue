@@ -2,12 +2,15 @@
   <div class="w-full px-2">
     <ListItem v-for="poll in polls" :key="poll.id">
       {{ poll.title }}
+      <template #totais>{{
+        poll.options.reduce((total, option) => total + option.score, 0)
+      }}</template>
       <template #options>
         <div class="flex flex-wrap items-center mb-3">
           <div
             v-for="option in poll.options"
             :key="option.id"
-            class="mb-2 mt-2"
+            class="mb-2 mt-2 options"
           >
             <span
               class="w-20 rounded-s-lg bg-slate-200 text-sky-900 p-2 ml-5"
@@ -28,7 +31,10 @@
           >
             Compartilhar
           </button>
-          <button class="p-1 bg-emerald-300 rounded m-1" @click="editPoll(poll.id)">
+          <button
+            class="p-1 bg-emerald-300 rounded m-1"
+            @click="editPoll(poll.id)"
+          >
             Editar
           </button>
           <button
@@ -53,8 +59,15 @@ const editPoll = (id) => {
 };
 const removePoll = async (id) => {
   await deletePoll(id);
+  polls = await fetchPollList();
 };
-const sharedPoll = (id) => {
-  router.push({ path: "/vote", query: { id } });
+const sharedPoll = (pollid) => {
+  window.open(`/vote?id=${pollid}`, "_blank");
 };
 </script>
+
+<style>
+.options {
+  user-select: none;
+}
+</style>
