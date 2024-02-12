@@ -8,6 +8,7 @@ export default () => {
         await $fetch("https://polls-xi-ten.vercel.app/polls", {
           headers: {
             getSetCookie: sessionId.value,
+            "Content-Type": "application/json",
           },
         })
     );
@@ -45,6 +46,7 @@ export default () => {
           options: options.title.split(";").map((value) => value.trim()),
         },
         headers: {
+          "Content-Type": "application/json",
           getSetCookie: sessionId.value,
         },
       });
@@ -69,6 +71,7 @@ export default () => {
             options: poll.options,
           },
           headers: {
+            "Content-Type": "application/json",
             getSetCookie: sessionId.value,
           },
         })
@@ -84,6 +87,7 @@ export default () => {
           pollOptionId: pollOptionId,
         },
         headers: {
+          "Content-Type": "application/json",
           getSetCookie: sessionId.value,
         },
       }
@@ -99,6 +103,7 @@ export default () => {
           await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
             method: "DELETE",
             headers: {
+              "Content-Type": "application/json",
               getSetCookie: sessionId.value,
             },
           })
@@ -107,7 +112,11 @@ export default () => {
 
   const getPoll = async (id) => {
     try {
-      const data = await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`);
+      const data = await $fetch(`https://polls-xi-ten.vercel.app/polls/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       return data.poll;
     } catch (error) {
       console.log(error);
