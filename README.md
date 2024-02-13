@@ -1,12 +1,22 @@
-# Nuxt 3 Minimal Starter
+# WebPolls
 
-Veja o repositorio do backend [Polls](https://github.com/castelogui/polls) para auxiliar a implementar neste frontend.
+Este projeto é um frontend desenvolvido com Nuxt para o projeto da trilha Node.js [Polls](https://github.com/castelogui/polls).
+Antes de testar este projeto é preciso ter o backend [Polls](https://github.com/castelogui/polls) rodando localmente na posta 3333.
 
 ![Apresentação](https://github.com/castelogui/webpolls/blob/main/public/exemple.gif)
 
+## Funcionalidade
+
+O projeto tem a funcionalidade de criar enquetes e compartilha-las para obter votos.
+Com a função do websocket podemos obter a contagem de votos automaticamente na listagem das enquetes.
+
+Para criar uma enquete basta adicionar um título e as opções separadas por "*;*" (ponto e vírgula), é possível editar a enquete, podendo adicionar novas opções apenas adicionando o "*;*" ou remover a opção apenas apagando o campo.
+
+Para obter os votos basta compartilhar o link da enquete.
+
 ## Setup
 
-Make sure to install the dependencies:
+Instale as dependências utilizando:
 
 ```bash
 # npm
@@ -24,7 +34,7 @@ bun install
 
 ## Development Server
 
-Start the development server on `http://localhost:3000`:
+Inicie o servidor de desenvolvimento em `http://localhost:3000` com o seguinte comando:
 
 ```bash
 # npm
