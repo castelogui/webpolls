@@ -1,7 +1,7 @@
 <template>
   <div class="w-full px-2">
-    <ListItem v-if="poll.id">
-      {{ poll.title }}
+    <ListItem v-if="poll?.id">
+      {{ poll?.title }}
       <template #totais>{{
         poll.options.reduce((total, option) => total + option.score, 0)
       }}</template>
@@ -71,61 +71,43 @@
 </template>
 
 <script setup>
-const router = useRouter();
 const route = useRoute();
-const { getPoll, votePoll } = usePolls();
-let poll = reactive({
-  id: "",
-  title: "",
-  options: [],
-});
+const { getPoll, votePoll, pollsState } = usePolls();
+const poll = pollsState();
 let statusPoll = reactive({
   status: Boolean,
 });
 let showModal = reactive({ status: false });
 let linkShared = reactive({ value: "", link: "" });
-onMounted(async () => {
-  const id = route.query.id;
-  if (id) {
-    definePoll(id);
-  }
+
+const id = route.query.id;
+
+onMounted(() => {
+  definePoll(id);
 });
 
 const definePoll = async (id) => {
   const pollGet = await getPoll(id);
   if (pollGet) {
     statusPoll.status = true;
-    poll.id = pollGet.id;
-    poll.title = pollGet.title;
-    if (poll.options.length == 0) {
-      pollGet.options.map((option) => poll.options.push(option));
-    } else {
-      poll.options.map((option) => {
-        pollGet.options.map((optionGetPoll) => {
-          option.id == optionGetPoll.id
-            ? (option.score = optionGetPoll.score)
-            : option.score;
-        });
-      });
-    }
   } else {
     statusPoll.status = false;
   }
 };
 const votePollOption = async (id) => {
   const pollOptionId = id;
-  const pollId = poll.id;
+  const pollId = poll.value.id;
   await votePoll(pollId, pollOptionId);
   definePoll(pollId);
 };
 const sharedPoll = (pollid) => {
   linkShared.value = pollid;
-  linkShared.link = `webpolls.vercel.app/vote?id=${pollid}`;
+  linkShared.link = `localhost:3000/vote?id=${pollid}`;
   showModal.status = true;
 };
 const copyLink = () => {
-  window.open(`/vote?id=${linkShared.value}`, "_blank");
   showModal.value = false;
+  window.open(`/vote?id=${linkShared.value}`, "_blank");
 };
 </script>
 
