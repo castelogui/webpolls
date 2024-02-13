@@ -80,26 +80,28 @@
 
 <script setup>
 const router = useRouter();
-const route = useRoute();
-const { deletePoll, fetchPollList } = usePolls();
-let polls = await fetchPollList();
+
+const { deletePoll, fetchPollList, pollsList } = usePolls();
+const polls = pollsList();
 let showModal = reactive({ status: false });
 let linkShared = reactive({ value: "", link: "" });
+
+onMounted(() => log,fetchPollList());
+
 const editPoll = (id) => {
   router.push({ path: "/form", query: { id } });
 };
 const removePoll = async (id) => {
   await deletePoll(id);
-  polls = await fetchPollList();
 };
 const sharedPoll = (pollid) => {
   linkShared.value = pollid;
-  linkShared.link = `webpolls.vercel.app/vote?id=${pollid}`;
+  linkShared.link = `localhost:3000/vote?id=${pollid}`;
   showModal.status = true;
 };
-const copyLink = (pollid) => {
+const copyLink = () => {
+  showModal.status = false;
   window.open(`/vote?id=${linkShared.value}`, "_blank");
-  showModal.value = false;
 };
 </script>
 
