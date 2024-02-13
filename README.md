@@ -1,6 +1,6 @@
 # Nuxt 3 Minimal Starter
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Veja o repositorio do backend [Polls](https://github.com/castelogui/polls) para auxiliar a implementar neste frontend.
 
 ![Apresentação](https://github.com/castelogui/webpolls/blob/main/public/exemple.gif)
 
