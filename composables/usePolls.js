@@ -1,11 +1,11 @@
 export default () => {
   const sessionId = useCookie("sessionId");
 
-  //const apiWs_ = "ws://polls-xi-ten.vercel.app";
-  //const api_ = "https://polls-xi-ten.vercel.app";
+  const apiWs = "ws://polls.railway.internal";
+  const api = "https://polls.railway.internal";
 
-  const api = "http://localhost:3333";
-  const apiWs = "ws://localhost:3333";
+  const api_ = "http://localhost:3333";
+  const apiWs_ = "ws://localhost:3333";
 
   const pollsList = () => useState("polls_list", () => []);
   const pollsState = () => useState("polls_state", () => {});
